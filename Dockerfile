@@ -1,16 +1,20 @@
-FROM python:3.7-alpine
+FROM python:3.7.3
 
-MAINTAINER Doug MacLeod "doug.macleod@smartcloudforge.com"
+MAINTAINER Trent Taylor "trent.taylor@smartcloudforge.com"
 
-RUN apt-get update && apt-get install -y python-pip python-dev && \
+RUN whereis python
+
+#apt-get install -y python3-pip python3-dev
+
+RUN apt-get update && \
  pip install --upgrade pip
  
-COPY ./Flask_App
+COPY . ./Flask_App
 WORKDIR /Flask_App
 
 RUN pip install -r fa_requirements.txt
 
-ENTRYPOINT [ "python" ]
+EXPOSE 5000
 
-CMD [ "quickstart_app.py" ]
+CMD python quickstart_app.py 
 
