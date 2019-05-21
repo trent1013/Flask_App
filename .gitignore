@@ -130,3 +130,4 @@ example_apps/translations/
 # Private files
 local_settings.py
 example_apps/local_settings.py
+.aws/

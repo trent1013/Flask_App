@@ -4,10 +4,10 @@
 # - Using class-based configuration (instead of file-based configuration)
 # - Using string-based templates (instead of file-based templates)
 
-from flask import Flask, render_template_string
+from flask import Flask, render_template_string, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_user import login_required, UserManager, UserMixin
-
+import boto3
 
 # Class-based application configuration
 class ConfigClass(object):
@@ -90,10 +90,53 @@ def create_app():
                 <p><a href={{ url_for('home_page') }}>Home page</a> (accessible to anyone)</p>
                 <p><a href={{ url_for('member_page') }}>Member page</a> (login required)</p>
                 <p><a href={{ url_for('user.logout') }}>Sign out</a></p>
-            {% endblock %}
+            <div class="centered" style="text-align: center">
+                  <br><br><br>
+                  <p>upload excel files here (.xlsx only)</p>
+                  <div class="inline" style="display: inline-block">
+                  <form method="POST" enctype="multipart/form-data" action="upload">
+                      <input id="upload" type=file  name="files[]">
+                      <input type="submit">
+                  </form>
+              <div class="text-box">
+                  <textarea class="form-control" rows=10  id="xlx_json"></textarea>  
+              </div> 
+                <script>
+                    document.getElementById(\'upload\').addEventListener(\'change\', handleFileSelect, false);
+
+                </script>
+                </div>
+            </div> 
+            {% endblock %}   
             """)
 
-    return app
+    #return app
+
+    @app.route('/upload', methods=['POST'])
+    @login_required
+    def upload():
+        s3 = boto3.resource('s3')
+
+        s3.Bucket('scf-a894fdf4-9c90-431a-b455-d4244da03a1f').put_object(Key='excel_file.xlsx', Body=request.files['files[]'])
+
+        # String-based templates
+        return render_template_string("""
+            {% extends "flask_user_layout.html" %}
+            {% block content %}
+                <head>
+                      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+                  </head>
+                  <body>
+                      <div class="centered" style="text-align: center">
+                          <div class="inline" style="display: inline-block">                
+                            <h1>File saved to s3</h1>
+                          </div>    
+                      </div>
+                  </body>
+            {% endblock %}
+            """)
+    return app    
+                                 
 
 
 # Start development web server
