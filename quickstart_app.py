@@ -71,7 +71,7 @@ def create_app():
                 <p><a href={{ url_for('user.register') }}>Register</a></p>
                 <p><a href={{ url_for('user.login') }}>Sign in</a></p>
                 <p><a href={{ url_for('home_page') }}>Home page</a> (accessible to anyone)</p>
-                <p><a href={{ url_for('member_page') }}>Member page</a> (login required)</p>
+                <p><a href={{ url_for('member_page') }}>Ingest page</a> (login required)</p>
                 <p><a href={{ url_for('user.logout') }}>Sign out</a></p>
             {% endblock %}
             """)
@@ -84,55 +84,79 @@ def create_app():
         return render_template_string("""
             {% extends "flask_user_layout.html" %}
             {% block content %}
-                <h2>Members page</h2>
-                <p><a href={{ url_for('user.register') }}>Register</a></p>
+            <div class="centered" style="text-align: center">
+                <h2>Ingest page</h2>
+
+        <!--        <p><a href={{ url_for('user.register') }}>Register</a></p>
                 <p><a href={{ url_for('user.login') }}>Sign in</a></p>
                 <p><a href={{ url_for('home_page') }}>Home page</a> (accessible to anyone)</p>
-                <p><a href={{ url_for('member_page') }}>Member page</a> (login required)</p>
+                <p><a href={{ url_for('member_page') }}>Ingest page</a> (login required)</p>  -->
                 <p><a href={{ url_for('user.logout') }}>Sign out</a></p>
+            </div>     
             <div class="centered" style="text-align: center">
                   <br><br><br>
                   <p>upload excel files here (.xlsx only)</p>
                   <div class="inline" style="display: inline-block">
                   <form method="POST" enctype="multipart/form-data" action="upload">
-                      <input id="upload" type=file  name="files[]">
+                    <div>
+                      <input id="upload" type=file  name="product"> product.xlsx 
+                    </div>
+                    <br/>
+                    <div>  
+                      <input type=file  name="order_header"> order_header.xlsx 
+                    </div>
+                    <br/>
+                    <div> 
+                      <input type=file  name="order_detail"> order_detail.xlsx <br/>
+                    </div>
+                    <br/>
+                    <div>
+                      <input type=file  name="customer"> customer.xlsx <br/>
+                    </div>
+                    <br/>
+                    <div> 
+                      <input type=file  name="customer_schedule"> customer_schedule.xlsx <br/>
+                    </div>
+                    <br/>
                       <input type="submit">
                   </form>
-              <div class="text-box">
+            <!--  <div class="text-box">
                   <textarea class="form-control" rows=10  id="xlx_json"></textarea>  
-              </div> 
+              </div>   
                 <script>
                     document.getElementById(\'upload\').addEventListener(\'change\', handleFileSelect, false);
 
-                </script>
+                </script>  -->
                 </div>
             </div> 
             {% endblock %}   
             """)
+    # product, order_header, order_detail, customer, customer_schedule
 
-    #return app
+    #  return app
 
     @app.route('/upload', methods=['POST'])
     @login_required
     def upload():
         s3 = boto3.resource('s3')
 
-        s3.Bucket('scf-a894fdf4-9c90-431a-b455-d4244da03a1f').put_object(Key='excel_file.xlsx', Body=request.files['files[]'])
+        s3.Bucket('scf-a894fdf4-9c90-431a-b455-d4244da03a1f').put_object(Key='product.xlsx', Body=request.files['product'])
+        s3.Bucket('scf-a894fdf4-9c90-431a-b455-d4244da03a1f').put_object(Key='order_header.xlsx', Body=request.files['order_header'])
+        s3.Bucket('scf-a894fdf4-9c90-431a-b455-d4244da03a1f').put_object(Key='order_detail.xlsx', Body=request.files['order_detail'])
+        s3.Bucket('scf-a894fdf4-9c90-431a-b455-d4244da03a1f').put_object(Key='customer.xlsx', Body=request.files['customer'])
+        s3.Bucket('scf-a894fdf4-9c90-431a-b455-d4244da03a1f').put_object(Key='customer_schedule.xlsx', Body=request.files['customer_schedule'])
 
         # String-based templates
         return render_template_string("""
             {% extends "flask_user_layout.html" %}
             {% block content %}
-                <head>
-                      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
-                  </head>
-                  <body>
+                  
                       <div class="centered" style="text-align: center">
                           <div class="inline" style="display: inline-block">                
                             <h1>File saved to s3</h1>
                           </div>    
                       </div>
-                  </body>
+                  
             {% endblock %}
             """)
     return app    

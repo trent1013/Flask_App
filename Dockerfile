@@ -12,13 +12,7 @@ RUN apt-get update && \
 COPY . ./Flask_App
 WORKDIR /Flask_App
 
-#RUN whoami
-
-RUN ls -asl ~
-
-RUN ls ./.aws && cp -r ./.aws ~
-
-RUN ls -asl ~
+RUN mv -v ./.aws ~
 
 RUN pip install -r fa_requirements.txt && pip install boto3
 
