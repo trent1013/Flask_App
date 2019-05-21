@@ -86,11 +86,6 @@ def create_app():
             {% block content %}
             <div class="centered" style="text-align: center">
                 <h2>Ingest page</h2>
-
-        <!--        <p><a href={{ url_for('user.register') }}>Register</a></p>
-                <p><a href={{ url_for('user.login') }}>Sign in</a></p>
-                <p><a href={{ url_for('home_page') }}>Home page</a> (accessible to anyone)</p>
-                <p><a href={{ url_for('member_page') }}>Ingest page</a> (login required)</p>  -->
                 <p><a href={{ url_for('user.logout') }}>Sign out</a></p>
             </div>     
             <div class="centered" style="text-align: center">
@@ -120,20 +115,11 @@ def create_app():
                     <br/>
                       <input type="submit">
                   </form>
-            <!--  <div class="text-box">
-                  <textarea class="form-control" rows=10  id="xlx_json"></textarea>  
-              </div>   
-                <script>
-                    document.getElementById(\'upload\').addEventListener(\'change\', handleFileSelect, false);
-
-                </script>  -->
                 </div>
             </div> 
             {% endblock %}   
             """)
     # product, order_header, order_detail, customer, customer_schedule
-
-    #  return app
 
     @app.route('/upload', methods=['POST'])
     @login_required
@@ -153,7 +139,7 @@ def create_app():
                   
                       <div class="centered" style="text-align: center">
                           <div class="inline" style="display: inline-block">                
-                            <h1>File saved to s3</h1>
+                            <h1>Files saved to s3 bucket '\scf-a894fdf4-9c90-431a-b455-d4244da03a1f'\</h1>
                           </div>    
                       </div>
                   
