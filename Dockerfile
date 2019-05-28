@@ -2,10 +2,6 @@ FROM python:3.7.3
 
 MAINTAINER Trent Taylor "trent.taylor@smartcloudforge.com"
 
-#RUN whereis python
-
-#apt-get install -y python3-pip python3-dev
-
 RUN apt-get update && \
  pip install --upgrade pip
  

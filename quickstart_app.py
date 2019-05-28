@@ -4,6 +4,8 @@
 # - Using class-based configuration (instead of file-based configuration)
 # - Using string-based templates (instead of file-based templates)
 
+# create new bucket, only send order_detail to new bucket, trigger pipe_1 from this bucket event
+
 from flask import Flask, render_template_string, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_user import login_required, UserManager, UserMixin
@@ -126,11 +128,13 @@ def create_app():
     def upload():
         s3 = boto3.resource('s3')
 
-        s3.Bucket('scf-a894fdf4-9c90-431a-b455-d4244da03a1f').put_object(Key='product.xlsx', Body=request.files['product'])
-        s3.Bucket('scf-a894fdf4-9c90-431a-b455-d4244da03a1f').put_object(Key='order_header.xlsx', Body=request.files['order_header'])
-        s3.Bucket('scf-a894fdf4-9c90-431a-b455-d4244da03a1f').put_object(Key='order_detail.xlsx', Body=request.files['order_detail'])
-        s3.Bucket('scf-a894fdf4-9c90-431a-b455-d4244da03a1f').put_object(Key='customer.xlsx', Body=request.files['customer'])
-        s3.Bucket('scf-a894fdf4-9c90-431a-b455-d4244da03a1f').put_object(Key='customer_schedule.xlsx', Body=request.files['customer_schedule'])
+        s3.Bucket('scf-a894fdf4-9c90-431a-b455-d4244da03a1f').put_object(Key='product.csv', Body=request.files['product'])
+        s3.Bucket('scf-a894fdf4-9c90-431a-b455-d4244da03a1f').put_object(Key='order_header.csv', Body=request.files['order_header'])
+        s3.Bucket('scf-a894fdf4-9c90-431a-b455-d4244da03a1f').put_object(Key='order_detail.csv', Body=request.files['order_detail'])
+        s3.Bucket('scf-a894fdf4-9c90-431a-b455-d4244da03a1f').put_object(Key='customer.csv', Body=request.files['customer'])
+        s3.Bucket('scf-a894fdf4-9c90-431a-b455-d4244da03a1f').put_object(Key='customer_schedule.csv', Body=request.files['customer_schedule'])
+
+        s3.Bucket('scf-faked-input-for-before-state-100').put_object(Key='order_detail.csv', Body=request.files['order_detail'])
 
         # String-based templates
         return render_template_string("""
@@ -139,7 +143,7 @@ def create_app():
                   
                       <div class="centered" style="text-align: center">
                           <div class="inline" style="display: inline-block">                
-                            <h1>Files saved to s3 bucket '\scf-a894fdf4-9c90-431a-b455-d4244da03a1f'\</h1>
+                            <h1>Files saved to s3 bucket 'scf-a894fdf4-9c90-431a-b455-d4244da03a1f'</h1>
                           </div>    
                       </div>
                   
